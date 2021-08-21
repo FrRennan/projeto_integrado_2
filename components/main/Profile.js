@@ -32,20 +32,6 @@ function Profile(props) {
                     console.log('não existe')
                 }
             })
-            firebase.firestore()
-            .collection("posts")
-            .doc(props.route.params.uid)
-            .collection("userPosts")
-            .orderBy("creation", "asc")
-            .get()
-            .then((snapshot) => {
-                let posts = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    return { id, ...data }
-                })
-                setUserPosts(posts)
-            })
         }
 
         if(props.following.indexOf(props.route.params.uid) > -1){
@@ -55,6 +41,21 @@ function Profile(props) {
         }
 
     }, [props.route.params.uid, props.following])
+
+    firebase.firestore()
+    .collection("posts")
+    .doc(props.route.params.uid)
+    .collection("userPosts")
+    .orderBy("creation", "asc")
+    .get()
+    .then((snapshot) => {
+        let posts = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const id = doc.id;
+            return { id, ...data }
+        })
+        setUserPosts(posts)
+    })
 
     const onFollow = () => {
         firebase.firestore()
